@@ -3,7 +3,7 @@ import { processTaskRequest ,processDeleterequest} from "../services/task.servic
 import Task from "../interfaces";
 
 let tasks : Task[] = []
-
+let i = 1
 
 export const addTask = (req : Request, res : Response) => {
     const {name, id} = req.body
