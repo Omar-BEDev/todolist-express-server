@@ -21,3 +21,13 @@ export const processDeleterequest = (tasks : Task[], id : number) : string => {
     tasks.splice(taskIndex,1)
     return "delete task complete"
 }
+
+export const updateTaskProcess = (tasks : Task[],id : number, newId : number, newName : string) : Task => {
+
+    const index = tasks.findIndex(x => x.ID === id)
+    if (index === -1)  throw new Error("we didnt fount task by id" + id)
+    
+    tasks[index] = {taskName : newName, ID : newId, date : tasks[index].date};
+    return tasks[index]
+
+}

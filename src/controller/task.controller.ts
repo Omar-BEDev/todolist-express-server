@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { processTaskRequest ,processDeleterequest} from "../services/task.services";
+import { processTaskRequest ,processDeleterequest,updateTaskProcess} from "../services/task.services";
 import Task from "../interfaces";
 
+
 let tasks : Task[] = []
-let i = 1
+
 
 export const addTask = (req : Request, res : Response) => {
     const {name, id} = req.body
@@ -20,13 +21,24 @@ export const getTask = (req : Request,res : Response) => {
 }
 
 export const deleteTask = (req : Request,res : Response) => {
-    const id = req.params.id
+    const id = Number(req.params.id)
     try {
-     const tasksprocessResult : string = processDeleterequest(tasks,Number(id));
+     const tasksprocessResult : string = processDeleterequest(tasks,id);
        return res.status(200).json(tasksprocessResult)
 
     } catch (error) {
       return  res.status(404).json("error :" + error)
     }
     
+}
+export const updateTask = (req : Request,res : Response) => {
+  const {id, newId, newName} = req.body;
+  try{
+    const taskUpdate : Task = updateTaskProcess(tasks,id,newId,newName)
+    return res.status(200).json(taskUpdate)
+  }
+  catch (error){
+    return res.status(400).json("error :" + error)
+  }
+  
 }
