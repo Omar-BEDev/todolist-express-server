@@ -22,32 +22,35 @@ export const getTask = async (req : Request,res : Response) => {
 
 
 export const deleteTask = async (req : Request,res : Response) => {
-    const name = req.params.name
+    const id = req.params.id
     try {
-     const tasksprocessResult = await processDeleterequest(name);
+     const tasksprocessResult = await processDeleterequest(id);
        return res.status(200).json(tasksprocessResult)
 
-    } catch (error) {
+    } catch (error : any) {
+      if (error.message === "MongoServerSelectionError") {
+        return res.status(500).json({message : "we have a problem in connected with server"})
+      }
       return  res.status(404).json("error :" + error)
     }
     
 }
 export const updateTask = async (req : Request,res : Response) => {
-  const name = req.params.name
+  const id = req.params.id
   const { newName} = req.body;
   try{
-    const taskUpdate = await updateTaskProcess(name, newName)
+    const taskUpdate = await updateTaskProcess(id, newName)
 
     return res.status(200).json(taskUpdate)
   }
   catch (error : any){
     
       if (error.name === "ValidationError"){
-        return res.status(400).json("error : " + error.message)
+        return res.status(400).json({ message :  error.message})
       } else if(error.name === "CastError"){
-        return res.status(400).json("error : " + error.message)
+        return res.status(400).json({message : error.message})
       } else if(error.code === 11000){
-        return res.status(400).json("error : " + error.message)
+        return res.status(400).json({message : "this data already exists"})
       }
     
     return res.status(400).json("unknow error" + error)

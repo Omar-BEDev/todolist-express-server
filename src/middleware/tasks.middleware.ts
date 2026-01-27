@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { Response, Request, NextFunction } from "express"
-
+import { Types } from "mongoose"
 
 
 export const validateTaskRequest = (req : Request,res : Response,next : NextFunction) => {
@@ -20,7 +20,11 @@ export const validateTaskRequest = (req : Request,res : Response,next : NextFunc
 export const validateParamsRequest = (req : Request,res : Response, next : NextFunction) => {
     
     const shema = z.object({
-      name : z.string().min(1)
+      id : z.string().refine((val) => {
+        return Types.ObjectId.isValid(val)
+      }, {
+        message : "invalid mongo id"
+      })
     })
 
     const id = shema.safeParse(req.params);

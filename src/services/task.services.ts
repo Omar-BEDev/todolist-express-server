@@ -1,4 +1,3 @@
-
 import {ITask} from '../interfaces'
 import Task, { TaskDocument } from '../models/task.model';
 
@@ -10,21 +9,21 @@ export const processTaskRequest = (name : string) : ITask=> {
     return result;
 }
 
-export const processDeleterequest = async (name : string) : Promise<string> => {
-    const deleteTask = await Task.deleteOne({taskName : name});
+export const processDeleterequest = async (id : string) : Promise<string> => {
+    const deleteTask = await Task.findByIdAndDelete(id);
     if (!deleteTask) throw new Error("the task delete not completed")
     return "delete task complete"
 }
 
-export const updateTaskProcess = async (name : string, newName : string)  => {
+export const updateTaskProcess = async (id : string, newName : string)  => {
 
    const taskInfo : TaskDocument | null = await Task.findOneAndUpdate(
-    {taskName : name},
+    {_id : id},
     {taskName: newName},
     {new : true}
 
 );
-    if (!taskInfo)  throw new Error("we didnt fount task by name " + name)
+    if (!taskInfo)  throw new Error("we didnt fount task ")
     return taskInfo
 
 }

@@ -6,8 +6,8 @@ const taskRouter = Router()
 
 taskRouter.post("/",validateTaskRequest,addTask)
 taskRouter.get("/",getTask)
-taskRouter.delete("/:name", validateParamsRequest,deleteTask)
-taskRouter.put("/tasks_update",validateParamsRequest,validateUpdateRequest,updateTask)
+taskRouter.delete("/:id", validateParamsRequest,deleteTask)
+taskRouter.put("/id",validateParamsRequest,validateUpdateRequest,updateTask)
 
 
 export default taskRouter;
