@@ -7,12 +7,23 @@ import Task from "../models/task.model";
 
 export const addTask = async (req : Request, res : Response) => {
     const {name} = req.body
+    try {
     const resultOfProcessTask = processTaskRequest(name)
     const newTask  = new Task(resultOfProcessTask);
     await newTask.save()
-    
-    
     res.status(201).json(newTask)
+    } catch(error : any){
+      if (error.name === "ValidationError"){
+        return res.status(400).json({ message :  error.message})
+      } else if(error.name === "CastError"){
+        return res.status(400).json({message : error.message})
+      } else if(error.code === 11000){
+        return res.status(400).json({message : "this data already exists"})
+      }
+      return res.status(404).json({message : error.message})
+    }
+    
+    
 }
 
 export const getTask = async (req : Request,res : Response) => {
@@ -31,7 +42,7 @@ export const deleteTask = async (req : Request,res : Response) => {
       if (error.message === "MongoServerSelectionError") {
         return res.status(500).json({message : "we have a problem in connected with server"})
       }
-      return  res.status(404).json("error :" + error)
+      return  res.status(404).json({message :  error.message})
     }
     
 }

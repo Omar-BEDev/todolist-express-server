@@ -1,5 +1,6 @@
 import {ITask} from '../interfaces'
 import Task, { TaskDocument } from '../models/task.model';
+import { User } from '../models/user.models';
 
 export const processTaskRequest = (name : string) : ITask=> {
     const result : ITask = {
