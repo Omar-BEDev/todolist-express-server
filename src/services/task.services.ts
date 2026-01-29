@@ -1,11 +1,16 @@
+import { ObjectId } from 'mongoose';
 import {ITask} from '../interfaces'
 import Task, { TaskDocument } from '../models/task.model';
 import { User } from '../models/user.models';
 
-export const processTaskRequest = (name : string) : ITask=> {
+export const processTaskRequest = (name : string, id : ObjectId) : ITask=> {
+    
+    
     const result : ITask = {
         taskName : name,
+        userId : id,
         date : new Date()
+    
     }
     return result;
 }

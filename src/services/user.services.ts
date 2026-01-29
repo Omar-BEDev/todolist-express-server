@@ -1,6 +1,7 @@
 import { IUser } from "../interfaces"
 import { IUserDocument, User } from "../models/user.models"
 import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 export const addUser = (name : string,nickname : string,password : string, email : string) : IUser => {
 
     const newUser : IUser = {
@@ -15,7 +16,11 @@ export const addUser = (name : string,nickname : string,password : string, email
 export const checkUser = async (email : string, password : string)  => {
     const user  = await User.findOne({email : email})
     if (!user) throw new Error("INVALID_EMAIL")
-    if (user.password !== password) throw new Error("INVALID_PASSWORD")
+
+    const originalPasshashed = await bcrypt.hash(user.password,10)
+    const enterdPassword = await bcrypt.hash(password,10)
+    const checkPass =  await bcrypt.compare(enterdPassword,originalPasshashed) 
+    if (checkPass === false) throw new Error("INVALID_PASSWORD")
     return {message : "the login is succefully", userInfo : user}
     
 }

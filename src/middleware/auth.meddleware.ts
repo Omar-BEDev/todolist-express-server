@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { Response, Request, NextFunction } from "express"
+import { Response, NextFunction } from "express"
 import { authRequest, userPayload } from "../interfaces";
 export const authUser = (req : authRequest,res : Response,next : NextFunction) => {
     try{
