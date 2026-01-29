@@ -1,29 +1,70 @@
 import { Request, Response } from "express";
-import { processTaskRequest ,processDeleterequest} from "../services/task.services";
-import Task from "../interfaces";
-
-let tasks : Task[] = []
+import { processTaskRequest ,processDeleterequest,updateTaskProcess} from "../services/task.services";
+import Task from "../models/task.model";
 
 
-export const addTask = (req : Request, res : Response) => {
-    const {name, id} = req.body
 
-    const newTask : Task | string = processTaskRequest(name,id);
-    if(typeof newTask === "object") tasks.push(newTask)
-    else return res.status(400).json(newTask)
+
+export const addTask = async (req : Request, res : Response) => {
+    const {name} = req.body
+    try {
+    const resultOfProcessTask = processTaskRequest(name)
+    const newTask  = new Task(resultOfProcessTask);
+    await newTask.save()
+    res.status(201).json(newTask)
+    } catch(error : any){
+      if (error.name === "ValidationError"){
+        return res.status(400).json({ message :  error.message})
+      } else if(error.name === "CastError"){
+        return res.status(400).json({message : error.message})
+      } else if(error.code === 11000){
+        return res.status(400).json({message : "this data already exists"})
+      }
+      return res.status(404).json({message : error.message})
+    }
     
-    res.status(201).json(tasks)
+    
 }
 
-export const getTask = (req : Request,res : Response) => {
-    res.status(200).json(tasks)
+export const getTask = async (req : Request,res : Response) => {
+  const tasksDB =  await Task.find()
+  res.status(200).json(tasksDB)
 }
 
-export const deleteTask = (req : Request,res : Response) => {
-    const {id} = req.body
 
-    if(Number.isNaN(Number(id)) === true || Number(id) === 0) return res.status(400).json("try a true value")
-    const tasksprocessResult : string = processDeleterequest(tasks,id);
+export const deleteTask = async (req : Request,res : Response) => {
+    const id = req.params.id
+    try {
+     const tasksprocessResult = await processDeleterequest(id);
+       return res.status(200).json(tasksprocessResult)
 
-    res.status(200).json(tasksprocessResult)
+    } catch (error : any) {
+      if (error.message === "MongoServerSelectionError") {
+        return res.status(500).json({message : "we have a problem in connected with server"})
+      }
+      return  res.status(404).json({message :  error.message})
+    }
+    
+}
+export const updateTask = async (req : Request,res : Response) => {
+  const id = req.params.id
+  const { newName} = req.body;
+  try{
+    const taskUpdate = await updateTaskProcess(id, newName)
+
+    return res.status(200).json(taskUpdate)
+  }
+  catch (error : any){
+    
+      if (error.name === "ValidationError"){
+        return res.status(400).json({ message :  error.message})
+      } else if(error.name === "CastError"){
+        return res.status(400).json({message : error.message})
+      } else if(error.code === 11000){
+        return res.status(400).json({message : "this data already exists"})
+      }
+    
+    return res.status(400).json("unknow error" + error)
+  }
+  
 }

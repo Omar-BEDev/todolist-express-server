@@ -1,19 +1,30 @@
-import Task from '../interfaces'
+import {ITask} from '../interfaces'
+import Task, { TaskDocument } from '../models/task.model';
+import { User } from '../models/user.models';
 
-export const processTaskRequest = (name : string, id : number) : Task => {
-    const result : Task = {
+export const processTaskRequest = (name : string) : ITask=> {
+    const result : ITask = {
         taskName : name,
-        ID : id,
         date : new Date()
     }
     return result;
 }
 
-export const processDeleterequest = (tasks : Task[], id : number) : string => {
-   
-    const taskIndex = tasks.findIndex(task => task.ID === id)
-
-    if (taskIndex === -1) return "we didnt found this task"
-    tasks.splice(taskIndex,1)
+export const processDeleterequest = async (id : string) : Promise<string> => {
+    const deleteTask = await Task.findByIdAndDelete(id);
+    if (!deleteTask) throw new Error("the task delete not completed")
     return "delete task complete"
+}
+
+export const updateTaskProcess = async (id : string, newName : string)  => {
+
+   const taskInfo : TaskDocument | null = await Task.findOneAndUpdate(
+    {_id : id},
+    {taskName: newName},
+    {new : true}
+
+);
+    if (!taskInfo)  throw new Error("we didnt fount task ")
+    return taskInfo
+
 }
