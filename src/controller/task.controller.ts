@@ -1,17 +1,23 @@
 import { Request, Response } from "express";
+import { authRequest } from "../interfaces";
 import { processTaskRequest ,processDeleterequest,updateTaskProcess} from "../services/task.services";
 import Task from "../models/task.model";
 
 
 
 
-export const addTask = async (req : Request, res : Response) => {
+export const addTask = async (req : authRequest, res : Response) => {
+    
     const {name} = req.body
+    const id = req.user?.id
     try {
-    const resultOfProcessTask = processTaskRequest(name)
+    if(!id) return res.status(403).json({message : "User not authenticated"})
+    const resultOfProcessTask = processTaskRequest(name, id)
     const newTask  = new Task(resultOfProcessTask);
     await newTask.save()
     res.status(201).json(newTask)
+
+
     } catch(error : any){
       if (error.name === "ValidationError"){
         return res.status(400).json({ message :  error.message})

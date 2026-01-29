@@ -5,17 +5,21 @@ export interface IUserDocument extends IUser, Document{}
 
 const shema = new Schema<IUser>({
     name : {
-        required : true,
+        type : String,
+        required : true
     },
     nickName : {
-        required : true
+        required : true,
+        type : String
     },
     email : {
         required : true,
-        unique : true
+        unique : true,
+        type : String
     },
     password : {
-        required : true
+        required : true,
+        type : String
     },
 })
 export const User = mongoose.model("user",shema)
