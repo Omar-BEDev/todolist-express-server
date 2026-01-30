@@ -1,4 +1,4 @@
-import mongoose, {Document, Schema} from "mongoose";
+import mongoose, {Document,  Schema} from "mongoose";
 import {ITask} from "../interfaces";
 
 export interface TaskDocument extends ITask, Document{}
@@ -10,6 +10,7 @@ const shema = new Schema<ITask>({
         unique : true
     },
     userId : {
+        type : Schema.Types.ObjectId,
         required : true
     },
     date : {
