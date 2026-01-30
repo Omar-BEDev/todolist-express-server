@@ -24,6 +24,7 @@ export const addTask = async (req : authRequest, res : Response) => {
       } else if(error.name === "CastError"){
         return res.status(400).json({message : error.message})
       } else if(error.code === 11000){
+          console.log("CRITICAL: MongoDB says this is a duplicate:", error.keyValue);
         return res.status(400).json({message : "this data already exists"})
       }
       return res.status(404).json({message : error.message})
