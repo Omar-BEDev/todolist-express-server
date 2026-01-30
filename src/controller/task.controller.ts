@@ -34,7 +34,7 @@ export const addTask = async (req : authRequest, res : Response) => {
 
 export const getTask = async (req : authRequest,res : Response) => {
   if(!req.user) return res.status(403).json({message: "user not authenticated"}) 
-  const tasksDB =  await Task.find(req.user.id)
+  const tasksDB =  await Task.find({userId : req.user.id})
   res.status(200).json(tasksDB)
 }
 
