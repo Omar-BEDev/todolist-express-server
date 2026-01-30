@@ -7,7 +7,7 @@ import swaggerDocument from "./docs/swagger.json"
 
 
 const app = express();
-app.use(cors({origin : "http://localhost:5173"}))
+app.use(cors())
 app.use(express.json())
 app.use("/api/tasks",taskApp)
 app.use("/api/users",userRoutes)
