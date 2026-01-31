@@ -8,7 +8,7 @@ import swaggerDocument from "./docs/swagger.json"
 
 const app = express();
 app.use(cors({
-  origin: '*',  // or specific origins
+  origin: 'https://tasksimple.lovable.app',  
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
