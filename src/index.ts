@@ -14,13 +14,14 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
+app.use(helmet())
+app.use(mongoSanitize())
+app.use(globalRateLimit)
 app.use(express.json())
 app.use("/api/tasks",taskApp)
 app.use("/api/users",userRoutes)
 app.use("/docs",swaggerui.serve,swaggerui.setup(swaggerDocument))
-app.use(helmet())
-app.use(mongoSanitize())
-app.use(globalRateLimit)
+
 
 
 export default app
